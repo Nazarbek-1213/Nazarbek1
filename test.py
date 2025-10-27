@@ -41,8 +41,8 @@ def list_ctr():
 def delete_contact():
     list_ctr()
     a=input("id: ")
-    query = "DELETE FROM contact_info WHERE contact_id = %s"
-    cursor.execute(query, (a))
+    query = "update contact_info  set phone_number = null , name=null  WHERE contact_id = %s"
+    cursor.execute(query, (a,))
     connection.commit()
 
 def edit_contact():
@@ -62,7 +62,7 @@ def searching():
    print(result)
    connection.commit()
 
-def manager():
+def manager_contact():
     while True:
         a=input("1.add contact\n2.list\n3.delete\n4.edit\n5.search\n6.choose: ")
         if a=="1":
@@ -77,7 +77,7 @@ def manager():
             searching()
         else:
             break
-# manager()
+
 
 
 
