@@ -9,7 +9,7 @@ connection=psycopg2.connect(
 cursor=connection.cursor()
 create_table_query="""
 CREATE table  IF NOT EXISTS contact_info (
-        id SERIAL PRIMARY KEY,
+        contact_id SERIAL PRIMARY KEY,
         name VARCHAR(50),
         phone_number VARCHAR(50) )"""
 
@@ -21,7 +21,7 @@ class Contact:
         self.name=name
         self.phone_number=phone_number
 def add_user():
- name=input("name: ")
+ name=input("name: ").lower()
  phone_number=input("phone: ")
  contact1=Contact(name,phone_number)
  cursor=connection.cursor()
@@ -41,21 +41,43 @@ def list_ctr():
 def delete_contact():
     list_ctr()
     a=input("id: ")
-    query = "DELETE FROM contact_info WHERE id = %s"
+    query = "DELETE FROM contact_info WHERE contact_id = %s"
     cursor.execute(query, (a))
     connection.commit()
+
+def edit_contact():
+    list_ctr()
+    a=input("id: ")
+    name=input("name: ")
+    phone_number=input("phone_number: ")
+    query="""update  contact_info
+    set name=%s,phone_number=%s where contact_id=%s"""
+    cursor.execute(query,(name,phone_number,a))
+    connection.commit()
+def searching():
+   name=input("name: ")
+   query="select phone_number from contact_info where name=%s"
+   cursor.execute(query,(name,))
+   result=cursor.fetchall()
+   print(result)
+   connection.commit()
+
 def manager():
     while True:
-        a=input("1.add contact\n2.list\n3.delete\n4.choose: ")
+        a=input("1.add contact\n2.list\n3.delete\n4.edit\n5.search\n6.choose: ")
         if a=="1":
             add_user()
         elif a=="2":
             list_ctr()
         elif a=="3":
             delete_contact()
+        elif a=="4":
+            edit_contact()
+        elif a=="5":
+            searching()
         else:
             break
-manager()
+# manager()
 
 
 

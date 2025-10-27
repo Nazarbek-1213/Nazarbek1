@@ -1,63 +1,45 @@
 import psycopg2
-connection=psycopg2.connect(
+from test import *
+from datetime import datetime
+
+connection = psycopg2.connect(
     dbname="Database_1",
     user="postgres",
     password="Safarov2",
     host="localhost",
     port=5432
 )
-cursor=connection.cursor()
-query="""
-create table if not exists car_db(
-id serial primary key,
-car_name varchar(50),
-brend varchar(49),
-count int)"""
+cursor = connection.cursor()
+
+query = """
+CREATE TABLE IF NOT EXISTS sms_manager(
+    sms_id SERIAL PRIMARY KEY,
+    contact_id INT REFERENCES contact_info(contact_id),
+    number VARCHAR(50),
+    time TIMESTAMP,
+    massege TEXT
+)
+"""
 cursor.execute(query)
 connection.commit()
-def add_car():
-    car_name=input("car_name: ")
-    brend=input("brend: ")
-    count=input("count: ")
-    query="""insert into car_db(car_name,brend,count)
-    values(%s,%s,%s)"""
-    cursor.execute(query,(car_name,brend,count))
-    connection.commit()
-def list():
-    query="""select * from car_db"""
-    cursor.execute(query)
-    data=cursor.fetchall()
-    for i in data:
-        print(i)
-    connection.commit()
-def remove_car():
-    list()
-    a=input("id: ")
-    query="delete from car_db where id=%s "
-    cursor.execute(query,a)
-    connection.commit()
-def edit_info():
-    list()
-    a=input("enter the id: ")
-    car_name = input("car_name: ")
-    brend = input("brend: ")
-    count = input("count: ")
-    query="""update car_db
-    set car_name=%s,brend=%s,count=%s where id=%s """
-    cursor.execute(query,(car_name,brend,count,a))
-    connection.commit()
-def manager():
-    while True:
-        a = input("1.add \n2.list\n3.delete\n4.edit\n5.choose: ")
-        if a == "1":
-            add_car()
-        elif a == "2":
-            list()
-        elif a == "3":
-            remove_car()
-        elif a=="4":
-            edit_info()
-        else:
-            break
-manager()
+
+def add_sms():
+    list_ctr()
+    current=datetime.now()
+    contact_id=input("choose id to messeging: ")
+    query="""select name,phone_number from contact_info
+    where contact_id=%s"""
+    cursor.execute(query,(contact_id,))
+    contact = cursor.fetchone()
+    if not contact_id:
+        print("not found")
+    else:
+     massege=input("enter your messege: ")
+     number=contact[1]
+     query1="""insert into sms_manager
+     (contact_id,number,time,massege)
+     values(%s,%s,%s,%s)"""
+     cursor.execute(query1,(contact_id,number,current,massege))
+     connection.commit()
+def delete_sms():
 
