@@ -27,7 +27,7 @@ def add_dep():
     return dep_id
 
 def delete_dep():
-    title=input("title: ")
+    title=input("title: ").strip()
     query="""delete from department where title=%s"""
     cursor.execute(query,(title,))
     connection.commit()

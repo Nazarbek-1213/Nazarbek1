@@ -14,7 +14,7 @@ country_type varchar(30))"""
 cursor.execute(query)
 connection.commit()
 def add_country():
-    name = input("country name: ")
+    name = input("country name: ").strip()
     control_type = input("control type: ")
     query = """insert into country(name, country_type)
                values (%s, %s) returning country_id"""

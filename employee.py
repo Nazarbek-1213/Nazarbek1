@@ -12,7 +12,7 @@ connection=psycopg2.connect(
 cursor=connection.cursor()
 query="""create table if not exists employee(
 employee_id serial primary key,
-name varchar(30),
+name_employee varchar(30),
 country_id int  references country(country_id),
 department_id int  references department(id),
 hire_date date,
@@ -31,7 +31,7 @@ def add_employee():
     email = input("email: ")
 
     query = """insert into employee(
-        name, country_id, department_id, hire_date, salary, email
+        name_employee, country_id, department_id, hire_date, salary, email
     ) values (%s, %s, %s, %s, %s, %s)"""
 
     cursor.execute(query, (name, country_id, dep_id, time, salary, email))
@@ -39,7 +39,7 @@ def add_employee():
 
 def delete_employee():
     name=input("name: ")
-    query="""delete from employee where name=%s"""
+    query="""delete from employee where name_employee=%s"""
     cursor.execute(query,(name,))
     connection.commit()
 
@@ -56,21 +56,21 @@ def edit_employee():
     new_name=input("new name: ")
     salary=input("salary: ")
     email=input("email: ")
-    query="""update employee set name=%s,salary=%s,email=%s where name=%s """
+    query="""update employee set name_employee=%s,salary=%s,email=%s where name=%s """
     cursor.execute(query,(new_name,salary,email ,old_name))
     connection.commit()
 def searching():
     country=input("country: ").strip()
     department=input("department:").strip()
-    query="""select c.name,d.title, e.name from employee e
+    query="""select c.name,d.title, e.name_employee from employee e
      natural join country c 
      natural join department d 
      where name=%s and title=%s 
-     group by c.name,d.title,e.name"""
+     group by c.name,d.title,e.name_employee"""
     cursor.execute(query,(country,department))
     data=cursor.fetchall()
     for i in data:
-        print(f'name:{i[2]},department:{i[1]},country:{i[0]}')
+     print(f'name:{i[2]},department:{i[1]},country:{i[0]}')
     connection.commit()
 
 def manager_employee():
